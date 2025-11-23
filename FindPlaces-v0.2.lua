@@ -1,6 +1,11 @@
 local cloneService = cloneref or function(obj) return obj end
 local clipBoard = setclipboard or toclipboard or set_clipboard or (Clipboard and Clipboard.set)
 local getCustomAsset = getcustomasset
+local IYLoaded = false
+
+if IY_LOADED then
+	IYLoaded = true
+end
 
 local Players: Players = cloneService(game:GetService("Players"))
 local LocalPlayer = Players.LocalPlayer
@@ -30,11 +35,15 @@ local TemplateF = PlacesF.TemplateF
 
 --// Main \\--
 local function Notification(text: string)
-	StarterGui:SetCore("SendNotification", {
-		Title = "Place Finder",
-		Text = text,
-		Duration = 3,
-	})
+	if IYLoaded then
+		notify("Place Finder", text)
+	else
+		StarterGui:SetCore("SendNotification", {
+			Title = "Place Finder",
+			Text = text,
+			Duration = 3,
+		})
+	end
 end
 
 CloseB.Activated:Once(function()
@@ -68,6 +77,7 @@ for i, v in GamePlaces:GetCurrentPage() do
 	
 	PlaceF.TeleportB.Activated:Once(function()
 		Notification("Teleporting...")
+		
 		TeleportService:Teleport(v.PlaceId, LocalPlayer)
 	end)
 	PlaceF.CopyIdB.Activated:Connect(function()
